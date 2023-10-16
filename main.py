@@ -35,7 +35,7 @@ class App(ttk.Frame):
         ckpt_manager = tf.train.CheckpointManager(ckpt, checkpoint_path, max_to_keep=1)
 
         if (ckpt_manager.latest_checkpoint):
-            ckpt.restore(ckpt_manager.latest_checkpoint)
+            ckpt.restore(ckpt_manager.latest_checkpoint).expect_partial()
             print("Latest Checkpoint restored")
         self.setup_widgets()
         self._offsetx = 0
@@ -93,8 +93,20 @@ class App(ttk.Frame):
         self.submit_button = ttk.Button(self, text="Submit", command=self.showResult)
         self.submit_button.grid(row=2, columnspan=2, pady=(0, 10))
 
-        # Making the input area and button dynamically change size based on app size
+        # Create a label with the creators' names
+        self.creators_label = ttk.Label(
+            self,
+            text="Created by Ali Mohammad and Dawi Alotaibi",
+            justify="left",
+            font=("-size", 8)
+        )
+
+        # Place the label at the bottom left of the window
+        self.creators_label.grid(row=3, column=0, padx=5, pady=10, sticky="w")
+
+        # Making the input area, button, and creators' label dynamically change size based on app size
         self.grid_rowconfigure(1, weight=1)
+        self.grid_columnconfigure(0, weight=1)  # Ensure that the first column is dynamically sized
         self.grid_columnconfigure(1, weight=1)
 
 
@@ -117,7 +129,7 @@ window.geometry(f"{window_width}x{window_height}+{x}+{y}")  # Center the window 
 
 window.tk.call("source", "azure.tcl")
 window.tk.call("set_theme", "dark")
-window.overrideredirect(True)
+#window.overrideredirect(True)
 
 app = App(window)
 app.pack(fill="both", expand=True)
