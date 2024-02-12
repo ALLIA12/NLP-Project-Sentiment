@@ -21,28 +21,19 @@ def init():
         tokenizer = pickle.load(handle)
 
 
-def preprocess_text(texts):
-    # Assuming 'texts' is a list of text entries to be processed
-    # Tokenize the texts
-    sequences = tokenizer.texts_to_sequences(texts)
-
-    # Pad the sequences (if necessary)
-    padded_sequences = tf.keras.preprocessing.sequence.pad_sequences(sequences,
-                                                                     maxlen=52)  # Specify `your_max_length` based on your model's expected input
-
-    return padded_sequences
-
-
 def run(raw_data):
     try:
         # Extract texts from the input JSON
         data = json.loads(raw_data)['data']
 
-        # Preprocess the text data
-        processed_data = preprocess_text(data)
+        # Tokenize the texts
+        sequence = tokenizer.texts_to_sequences([data])
 
+        # Pad the sequences (if necessary)
+        padded_sequence = tf.keras.preprocessing.sequence.pad_sequences(sequence, maxlen=52, padding='post',
+                                                                        truncating='post')
         # Perform prediction
-        predictions = model(processed_data)
+        predictions = model(padded_sequence)
 
         # Convert predictions to list (if necessary) and return
         return json.dumps({"result": predictions.numpy().tolist()})
