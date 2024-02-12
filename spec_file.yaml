@@ -1,0 +1,18 @@
+$schema: https://azuremlschemas.azureedge.net/latest/managedOnlineEndpoint.schema.json
+name: sentiment-analysis-endpoint
+type: managed  # Adjusted based on the error message
+auth_mode: key
+traffic:
+  blue: 100
+deployments:
+  - name: blue
+    endpoint_name: sentiment-analysis-endpoint  # Make sure this matches the endpoint name
+    model: azureml:sentiment_analysis_model:1
+    code_configuration:
+      code: .  # Assumes the scoring script is in the current directory
+      scoring_script: script.py
+    environment:
+      name: my-tf-conda-env
+      conda_file: environment.yml
+    instance_type: Standard_F2s_v2  # Ensure this is a valid Azure VM size
+    instance_count: 1
